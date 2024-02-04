@@ -3,6 +3,7 @@
  */
 public class Usuario {
     Script bdscript = new Script();
+    LimparTerminal limparTerminal;
 
     private String nome;
     private String senha;
@@ -29,11 +30,16 @@ public class Usuario {
     public int Login(String nome, String senha){
        int id = bdscript.getId(nome, senha);
        if(id==-1){
+        limparTerminal.clearScreen();
         System.out.println("Usuario nao encontrado ou senha errada");
+        
        }else{
+        limparTerminal.clearScreen();
         System.out.println("Login realizado com sucesso");
        }
        return id;
+
     }
+
 
 }

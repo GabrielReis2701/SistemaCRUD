@@ -1,14 +1,8 @@
 import javax.xml.crypto.Data;
 
 public class Lembretes {
+    Script bdscript = new Script();
     private String titulo, descricao;
-    private Data data;
-
-    public Lembretes(String titulo, String descricao, Data data) {
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.data = data;
-    }
 
     public String getTitulo() {
         return titulo;
@@ -25,13 +19,8 @@ public class Lembretes {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
+    public void setLembrete(Lembretes lembrete,int id_usuario) {
+        bdscript.InserirLembrete(id_usuario, lembrete.titulo, lembrete.descricao);
     }
 
 }

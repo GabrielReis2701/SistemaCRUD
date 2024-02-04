@@ -9,7 +9,6 @@ public class Conexao {
     public static Connection getConnection() {
         try {
             Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("conectado");
             return connection;
 
         } catch (SQLException e) {
