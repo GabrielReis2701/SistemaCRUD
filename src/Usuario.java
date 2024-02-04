@@ -2,14 +2,10 @@
  * Usuario
  */
 public class Usuario {
+    Script bdscript = new Script();
 
     private String nome;
     private String senha;
-
-    public Usuario(String nome, String senha) {
-        this.nome = nome;
-        this.senha = senha;
-    }
 
     public String getNome() {
         return this.nome;
@@ -28,8 +24,16 @@ public class Usuario {
     }
 
     public void setUsuario(Usuario usuario) {
-        this.nome = usuario.nome;
-        this.senha = usuario.senha;
+        bdscript.InserirUsuario(usuario.nome,usuario.senha);
+    }
+    public int Login(String nome, String senha){
+       int id = bdscript.getId(nome, senha);
+       if(id==-1){
+        System.out.println("Usuario nao encontrado ou senha errada");
+       }else{
+        System.out.println("Login realizado com sucesso");
+       }
+       return id;
     }
 
 }

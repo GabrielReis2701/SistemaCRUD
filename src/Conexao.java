@@ -1,9 +1,10 @@
 import java.sql.*;
 
+//classe que faz a conecção com o banco de dados
 public class Conexao {
-    private static final String URL = "jdbc:mysql://localhost:3306/trabalho_seguranca";
+    private static final String URL = "jdbc:mysql://localhost:3306/trabalho";
     private static final String USER = "root";
-    private static final String PASSWORD = "27315916";
+    private static final String PASSWORD = "123456";
 
     public static Connection getConnection() {
         try {
