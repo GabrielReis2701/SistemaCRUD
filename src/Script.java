@@ -77,14 +77,17 @@ public class Script {
         return id;
 
     }
-    public void ExibirLembretes(int id_usuario){
-        int id_lembrete=-1,id=-1;
+    //função que exibe os lembretes antes da edição
+    public int[] ExibirLembretes(int id_usuario){
+        int id=-1;
         String titulo="",descricao="";
         Date data;
+        int i=0;
+        int[] id_lem = new int[100];
         Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
-        String sql = "SELECT * FROM trabalho.lembrete WHERE id_usuario = ?";
+        String sql = "SELECT * FROM trabalho.lembrete WHERE id_usuario = ? ORDER BY id_lembrete";
         try{
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id_usuario);
@@ -94,11 +97,13 @@ public class Script {
             System.out.println("--------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
                 id = rs.getInt("id_usuario");
-                id_lembrete = rs.getInt("id_lembrete");
+                id_lem[i+1] = rs.getInt("id_lembrete");
                 titulo = rs.getString("titulo");
                 descricao = rs.getString("descricao");
                 data = rs.getDate("data");
-                System.out.printf("| %-10d | %-10d | %-10s | %-20s | %-50s |\n", id, id_lembrete, data.toString(), titulo, descricao);
+                i++;
+                System.out.printf("| %-10d | %-10d | %-10s | %-20s | %-50s |\n", id, i, data.toString(), titulo, descricao);
+                
             }
             System.out.println("--------------------------------------------------------------------------------------------------------------------------");
 
@@ -106,6 +111,34 @@ public class Script {
         System.out.println("Erro ao conectar ao banco de dados");
         e.printStackTrace();
     }
+        return id_lem;
+    }
+    //função para editar os Lembretes
+    public void EditarLembrete(int id_lembrete, Lembretes lembrete){
+        Conexao conexao = new Conexao();
+        Connection connection = conexao.getConnection();
+
+        String sql = "UPDATE lembrete SET titulo = ?, descricao = ?, data = ? WHERE id_lembrete = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, lembrete.getTitulo());
+            statement.setString(2, lembrete.getDescricao());
+            statement.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+            statement.setInt(4, id_lembrete);
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                LimparTerminal.clearScreen();
+                System.out.println("A atualização foi bem-sucedida!");
+            }else{
+                LimparTerminal.clearScreen();
+                System.out.println("Numero do Lembrete invalido"); 
+            }
+        }catch (SQLException e) {
+            System.out.println("Erro ao conectar ao banco de dados");
+            e.printStackTrace();
+        }
+
     }
 
         

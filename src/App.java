@@ -23,17 +23,13 @@ public class App {
             case 2:
                 Login();
                 break;
-            case 3:
-
-                break;
-        
             default:
                 break;
         }
         }
         LimparTerminal.clearScreen();
     }
-    //funÃ§Ã£o para criar usuario
+    //função para criar usuario
     public static void CriarUsuario(){
         String nome="";
         String senha=""; 
@@ -51,6 +47,7 @@ public class App {
             usuario.setUsuario(usuario); // Cadastra o Usuario dentro do banco de dados
         }
     }
+    //função de login
     public static void Login(){
         String nome="";
         String senha=""; 
@@ -69,6 +66,7 @@ public class App {
         LembretesOpc(id);
 
     }
+    //função para criar editar ou remover um lembrete
     public static void LembretesOpc(int id_usuario){
         Scanner scanner = new Scanner(System.in);
         int esc=0;
@@ -116,9 +114,24 @@ public class App {
     }
     private static void EditarLembrete(int id_usuario){
         Scanner scanner = new Scanner(System.in);
+        int[] lista = new int[10];
+        int numero=-1;
         String titulo="", descricao="";
         Lembretes lembretes = new Lembretes();
-        lembretes.bdscript.ExibirLembretes(id_usuario);
+        lista = lembretes.bdscript.ExibirLembretes(id_usuario);
+        System.out.print("Informe o numero do lembrete que deseja editar: ");
+        numero = scanner.nextInt();
+        scanner.nextLine();
 
+        System.out.print("Informe o novo titulo: ");
+        titulo = scanner.nextLine(); 
+        
+        System.out.print("\nInforme o novo lembrete: ");
+        descricao = scanner.nextLine();
+
+        lembretes.setTitulo(titulo);
+        lembretes.setDescricao(descricao);
+        lembretes.bdscript.EditarLembrete(lista[numero], lembretes);
     }
+    
 }
