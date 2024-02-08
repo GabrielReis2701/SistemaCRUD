@@ -54,7 +54,7 @@ public class App {
     public static void Login() {
         String nome = "";
         String senha = "";
-        int id = -1;
+        String id = "";
         Scanner scanner = new Scanner(System.in);
         do {
             System.out.println("Digite seu nome de Usuario");
@@ -67,13 +67,13 @@ public class App {
                                              // dados ser forem compativeis volta o id do usuario ao qual está
                                              // relacionado aos lembretes que o proprio criou
 
-        } while (id == -1);
-        LembretesOpc(id);
+        } while (id.equals(""));
+        LembretesOpc(id,nome);
 
     }
 
     // função para criar editar ou remover um lembrete
-    public static void LembretesOpc(int id_usuario) {
+    public static void LembretesOpc(String id_usuario, String nome) {
         Scanner scanner = new Scanner(System.in);
         int esc = 0;
         // menu de Opções
@@ -89,7 +89,7 @@ public class App {
 
             switch (esc) {
                 case 1:
-                    CriarLembrete(id_usuario);
+                    CriarLembrete(id_usuario,nome);
 
                     break;
                 case 2:
@@ -112,7 +112,7 @@ public class App {
 
     }
 
-    private static void CriarLembrete(int id_usuario) {
+    private static void CriarLembrete(String id_usuario, String nome) {
         Scanner scanner = new Scanner(System.in);
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
@@ -122,10 +122,10 @@ public class App {
         descricao = scanner.nextLine();
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
-        lembretes.setLembrete(lembretes, id_usuario);
+        lembretes.setLembrete(lembretes, id_usuario,nome);
     }
 
-    private static void EditarLembrete(int id_usuario) {
+    private static void EditarLembrete(String id_usuario) {
         Scanner scanner = new Scanner(System.in);
         int[] lista = new int[10];
         int numero = -1;
@@ -148,7 +148,7 @@ public class App {
         
     }
 
-    private static void RemoverLembrete(int id_usuario) {
+    private static void RemoverLembrete(String id_usuario) {
     	Scanner scanner = new Scanner(System.in);
     	int[] lista = new int[10];
         int numero = -1;

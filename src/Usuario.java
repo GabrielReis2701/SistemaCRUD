@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class Usuario {
     Script bdscript = new Script();
     LimparTerminal limparTerminal;
+    HashPassword hashPassword;
 
     private String nome;
     private String senha;
@@ -29,14 +30,14 @@ public class Usuario {
     }
 
     public void setUsuario(Usuario usuario) {
-    	byte[] salt = generateSalt();
-    	String hashedPassword = hashPassword(usuario.senha, salt);
+    	byte[] salt = HashPassword.generateSalt();
+    	String hashedPassword = HashPassword.hashPassword(usuario.senha, salt);
     	
         bdscript.InserirUsuario(usuario.nome,hashedPassword,salt);
     }
-    public int Login(String nome, String senha){
-       int id = bdscript.getId(nome, senha);
-       if(id==-1){
+    public String Login(String nome, String senha){
+       String salt = bdscript.Login(nome, senha);
+       if(salt.equals("")){
         limparTerminal.clearScreen();
         System.out.println("Usuario nao encontrado ou senha errada");
         
@@ -44,32 +45,8 @@ public class Usuario {
         LimparTerminal.clearScreen();
         System.out.println("Login realizado com sucesso");
        }
-       return id;
+       return salt;
 
-    }
-    public static byte[] generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return salt;
-    }
-    public static String hashPassword(String password, byte[] salt) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt);
-            byte[] hashedPassword = md.digest(password.getBytes());
-            return bytesToHex(hashedPassword);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
     }
     
     

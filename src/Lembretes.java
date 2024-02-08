@@ -19,8 +19,8 @@ public class Lembretes {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    public void setLembrete(Lembretes lembrete,int id_usuario) {
-        bdscript.InserirLembrete(id_usuario, lembrete.titulo, lembrete.descricao);
+    public void setLembrete(Lembretes lembrete,String id_usuario, String nome) {
+        bdscript.InserirLembrete(id_usuario, lembrete.titulo, lembrete.descricao, nome);
     }
 
 }
