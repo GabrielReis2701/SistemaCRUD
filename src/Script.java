@@ -1,5 +1,12 @@
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -55,7 +62,7 @@ public class Script {
         }
     }
     //função que exibe os lembretes antes da edição
-    public int[] ExibirLembretes(String id_usuario){
+    public int[] ExibirLembretes(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException{
         String id="";
         String titulo="",descricao="";
         Date data;
@@ -77,6 +84,7 @@ public class Script {
                 id_lem[i+1] = rs.getInt("id_lembrete");
                 titulo = rs.getString("titulo");
                 descricao = rs.getString("descricao");
+                descricao = CriptografarMensagem.Descriptografar(getSalt(nome), descricao);
                 data = rs.getDate("data");
                 i++;
                 System.out.printf("| %-10s | %-10d | %-10s | %-20s | %-50s |\n", id, i, data.toString(), titulo, descricao);
@@ -169,6 +177,28 @@ public class Script {
             throw new RuntimeException(e);
         }
         return hashedProvidedPassword;
+    }
+    public String getSalt(String nome) {
+    	Conexao conexao = new Conexao();
+        Connection connection = conexao.getConnection();
+        String salt="";
+        String sql = "SELECT salt FROM trabalho.usuario WHERE nome_usuario = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        	statement.setString(1, nome);
+
+        	try (ResultSet resultSet = statement.executeQuery()) {
+        		if (resultSet.next()) {
+        			salt = resultSet.getString("salt");
+
+        		} else {
+        			System.out.println("Salt não encontrado!");
+        		}
+        	}
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    	
+    	return salt;
     }
 
 }

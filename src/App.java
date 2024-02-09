@@ -1,4 +1,10 @@
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -51,7 +57,7 @@ public class App {
     }
 
     //funçao de login
-    public static void Login() {
+    public static void Login() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         String nome = "";
         String senha = "";
         String id = "";
@@ -73,7 +79,7 @@ public class App {
     }
 
     // função para criar editar ou remover um lembrete
-    public static void LembretesOpc(String id_usuario, String nome) {
+    public static void LembretesOpc(String id_usuario, String nome) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         Scanner scanner = new Scanner(System.in);
         int esc = 0;
         // menu de Opções
@@ -90,18 +96,18 @@ public class App {
             switch (esc) {
                 case 1:
                     CriarLembrete(id_usuario,nome);
-
+                    
                     break;
                 case 2:
                     Lembretes lembretes = new Lembretes();
-                    lembretes.bdscript.ExibirLembretes(id_usuario);
+                    lembretes.bdscript.ExibirLembretes(id_usuario, nome);
                     break;
                 case 3:
                     LimparTerminal.clearScreen();
-                    EditarLembrete(id_usuario);
+                    EditarLembrete(id_usuario,nome);
                     break;
                 case 4:
-                	RemoverLembrete(id_usuario);
+                	RemoverLembrete(id_usuario,nome);
                     break;
 
                 default:
@@ -112,26 +118,28 @@ public class App {
 
     }
 
-    private static void CriarLembrete(String id_usuario, String nome) {
+    private static void CriarLembrete(String id_usuario, String nome) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         Scanner scanner = new Scanner(System.in);
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
+        String salt = lembretes.bdscript.getSalt(nome);
         System.out.print("informe o titulo do Lembrete: ");
         titulo = scanner.nextLine();
         System.out.print("\nDigite a descricao do Lembrete: ");
         descricao = scanner.nextLine();
+        descricao = CriptografarMensagem.Criptografar(salt, descricao);
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
         lembretes.setLembrete(lembretes, id_usuario,nome);
     }
 
-    private static void EditarLembrete(String id_usuario) {
+    private static void EditarLembrete(String id_usuario,String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
         Scanner scanner = new Scanner(System.in);
         int[] lista = new int[10];
         int numero = -1;
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
-        lista = lembretes.bdscript.ExibirLembretes(id_usuario);
+        lista = lembretes.bdscript.ExibirLembretes(id_usuario,nome);
         System.out.print("Informe o numero do lembrete que deseja editar: ");
         numero = scanner.nextInt();
         scanner.nextLine();
@@ -148,13 +156,13 @@ public class App {
         
     }
 
-    private static void RemoverLembrete(String id_usuario) {
+    private static void RemoverLembrete(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
     	Scanner scanner = new Scanner(System.in);
     	int[] lista = new int[10];
         int numero = -1;
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
-        lista = lembretes.bdscript.ExibirLembretes(id_usuario);
+        lista = lembretes.bdscript.ExibirLembretes(id_usuario, nome);
         System.out.print("Informe o numero do lembrete que deseja remover: ");
         numero = scanner.nextInt();
         scanner.nextLine();

@@ -35,6 +35,7 @@ public class Usuario {
     	
         bdscript.InserirUsuario(usuario.nome,hashedPassword,salt);
     }
+    
     public String Login(String nome, String senha){
        String salt = bdscript.Login(nome, senha);
        if(salt.equals("")){
@@ -48,37 +49,5 @@ public class Usuario {
        return salt;
 
     }
-    
-    
-    /*
-     * try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT salt, hashed_password FROM usuarios WHERE username = ?";
-
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, username);
-
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        String salt = resultSet.getString("salt");
-                        String storedHashedPassword = resultSet.getString("hashed_password");
-                        String hashedProvidedPassword = hashPassword(providedPassword, Base64.getDecoder().decode(salt));
-
-                        if (hashedProvidedPassword.equals(storedHashedPassword)) {
-                            System.out.println("Senha correta!");
-                        } else {
-                            System.out.println("Senha incorreta!");
-                        }
-                    } else {
-                        System.out.println("Usuário não encontrado!");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-     * 
-     * */
-
 
 }
