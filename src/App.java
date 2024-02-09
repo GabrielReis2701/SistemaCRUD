@@ -30,7 +30,11 @@ public class App {
                 case 2:
                     Login();
                     break;
+                case 3:
+                   
+                    break;
                 default:
+                	System.out.println("Informe uma opção valida");
                     break;
             }
         }
@@ -111,6 +115,7 @@ public class App {
                     break;
 
                 default:
+                	System.out.println("Informe uma opção valida");
                     break;
             }
         }
@@ -123,11 +128,15 @@ public class App {
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
         String salt = lembretes.bdscript.getSalt(nome);
+        
         System.out.print("informe o titulo do Lembrete: ");
         titulo = scanner.nextLine();
         System.out.print("\nDigite a descricao do Lembrete: ");
         descricao = scanner.nextLine();
+        
+        titulo = CriptografarMensagem.Criptografar(salt, titulo);
         descricao = CriptografarMensagem.Criptografar(salt, descricao);
+        
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
         lembretes.setLembrete(lembretes, id_usuario,nome);
@@ -139,6 +148,8 @@ public class App {
         int numero = -1;
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
+        
+        String salt = lembretes.bdscript.getSalt(nome);
         lista = lembretes.bdscript.ExibirLembretes(id_usuario,nome);
         System.out.print("Informe o numero do lembrete que deseja editar: ");
         numero = scanner.nextInt();
@@ -149,7 +160,9 @@ public class App {
 
         System.out.print("\nInforme o novo lembrete: ");
         descricao = scanner.nextLine();
-
+        titulo = CriptografarMensagem.Criptografar(salt, titulo);
+        descricao = CriptografarMensagem.Criptografar(salt, descricao);
+        
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
         lembretes.bdscript.EditarLembrete(lista[numero], lembretes);

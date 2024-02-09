@@ -16,6 +16,7 @@ public class CriptografarMensagem {
 	    cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 	    byte[] encryptedMessage = cipher.doFinal(mensagem.getBytes());
 	    String encryptedMessageBase64 = Base64.getEncoder().encodeToString(encryptedMessage);
+
 		return encryptedMessageBase64;
 	}
     
@@ -26,7 +27,6 @@ public class CriptografarMensagem {
 	    SecretKeySpec keySpec = new SecretKeySpec(salt.getBytes(), "AES");
 		cipher.init(Cipher.DECRYPT_MODE, keySpec);
 		byte[] decryptedMessage = cipher.doFinal(Base64.getDecoder().decode(mensagem));
-		
 		return new String(decryptedMessage);
 	}
    

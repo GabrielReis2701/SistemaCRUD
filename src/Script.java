@@ -65,6 +65,7 @@ public class Script {
     public int[] ExibirLembretes(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException{
         String id="";
         String titulo="",descricao="";
+        String salt = getSalt(nome);
         Date data;
         int i=0;
         int[] id_lem = new int[100];
@@ -83,8 +84,9 @@ public class Script {
                 id = rs.getString("nome");
                 id_lem[i+1] = rs.getInt("id_lembrete");
                 titulo = rs.getString("titulo");
+                titulo = CriptografarMensagem.Descriptografar(salt, titulo);
                 descricao = rs.getString("descricao");
-                descricao = CriptografarMensagem.Descriptografar(getSalt(nome), descricao);
+                descricao = CriptografarMensagem.Descriptografar(salt, descricao);
                 data = rs.getDate("data");
                 i++;
                 System.out.printf("| %-10s | %-10d | %-10s | %-20s | %-50s |\n", id, i, data.toString(), titulo, descricao);
@@ -167,7 +169,9 @@ public class Script {
         			if (hashedProvidedPassword.equals(storedHashedPassword)) {
         				System.out.println("Login realizado com sucesso!!!");
         			} else {
-        				System.out.println("Senha incorreta!");
+        				System.out.println("Senha ou nome de usuario incorretos!");
+        				hashedProvidedPassword="";
+        				
         			}
         		} else {
         			System.out.println("Usuário não encontrado!");

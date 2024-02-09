@@ -38,14 +38,6 @@ public class Usuario {
     
     public String Login(String nome, String senha){
        String salt = bdscript.Login(nome, senha);
-       if(salt.equals("")){
-        limparTerminal.clearScreen();
-        System.out.println("Usuario nao encontrado ou senha errada");
-        
-       }else{
-        LimparTerminal.clearScreen();
-        System.out.println("Login realizado com sucesso");
-       }
        return salt;
 
     }
