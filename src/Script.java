@@ -16,8 +16,8 @@ import java.time.LocalDate;
 
 public class Script {
 
-    //Classe para inserir os Lembretes no Banco de dados 
-    public void InserirLembrete(String id_usuario, String titulo, String descricao,String nome) {
+    // Classe para inserir os Lembretes no Banco de dados
+    public void InserirLembrete(String id_usuario, String titulo, String descricao, String nome) {
         Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
@@ -39,13 +39,13 @@ public class Script {
             ex.printStackTrace();
         }
     }
-    //classe para inserir Usuarios ao Banco de dados
-    public void InserirUsuario(String nome, String hash_senha,byte[] salt) {
+
+    // classe para inserir Usuarios ao Banco de dados
+    public void InserirUsuario(String nome, String hash_senha, byte[] salt) {
         Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
         String sql = "INSERT INTO usuario (nome_usuario, senha, salt) VALUES (?, ?, ?)";
-        
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -61,47 +61,55 @@ public class Script {
             ex.printStackTrace();
         }
     }
-    //função que exibe os lembretes antes da edição
-    public int[] ExibirLembretes(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException{
-        String id="";
-        String titulo="",descricao="";
+
+    // função que exibe os lembretes antes da edição
+    public int[] ExibirLembretes(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+        String id = "";
+        String titulo = "", descricao = "";
         String salt = getSalt(nome);
         Date data;
-        int i=0;
+        int i = 0;
         int[] id_lem = new int[100];
         Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
         String sql = "SELECT * FROM trabalho.lembrete WHERE id_usuario = ? ORDER BY id_lembrete";
-        try{
+        try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, id_usuario);
             ResultSet rs = statement.executeQuery();
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("| %-10s | %-10s | %-10s | %-20s | %-50s |\n", "Usuario", "Nº Lembrete", "Data", "Titulo", "Descrição");
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+            System.out.println(
+                    "--------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("| %-10s | %-10s | %-10s | %-20s | %-50s |\n", "Usuario", "Nº Lembrete", "Data", "Titulo",
+                    "Descrição");
+            System.out.println(
+                    "--------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
                 id = rs.getString("nome");
-                id_lem[i+1] = rs.getInt("id_lembrete");
+                id_lem[i + 1] = rs.getInt("id_lembrete");
                 titulo = rs.getString("titulo");
                 titulo = CriptografarMensagem.Descriptografar(salt, titulo);
                 descricao = rs.getString("descricao");
                 descricao = CriptografarMensagem.Descriptografar(salt, descricao);
                 data = rs.getDate("data");
                 i++;
-                System.out.printf("| %-10s | %-10d | %-10s | %-20s | %-50s |\n", id, i, data.toString(), titulo, descricao);
-                
-            }
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+                System.out.printf("| %-10s | %-10d | %-10s | %-20s | %-50s |\n", id, i, data.toString(), titulo,
+                        descricao);
 
-        }catch (SQLException e) {
-        System.out.println("Erro ao conectar ao banco de dados");
-        e.printStackTrace();
-    }
+            }
+            System.out.println(
+                    "--------------------------------------------------------------------------------------------------------------------------");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar ao banco de dados");
+            e.printStackTrace();
+        }
         return id_lem;
     }
-    //função para editar os Lembretes
-    public void EditarLembrete(int id_lembrete, Lembretes lembrete){
+
+    // função para editar os Lembretes
+    public void EditarLembrete(int id_lembrete, Lembretes lembrete) {
         Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
@@ -115,20 +123,20 @@ public class Script {
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
-                LimparTerminal.clearScreen();
+
                 System.out.println("A atualização foi bem-sucedida!");
-            }else{
-                LimparTerminal.clearScreen();
-                System.out.println("Numero do Lembrete invalido"); 
+            } else {
+                System.out.println("Numero do Lembrete invalido");
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao conectar ao banco de dados");
             e.printStackTrace();
         }
 
     }
+
     public void RemoverLembrete(int id_lembrete) {
-    	Conexao conexao = new Conexao();
+        Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
 
         String sql = "DELETE FROM trabalho.lembrete WHERE id_lembrete = ?";
@@ -138,71 +146,71 @@ public class Script {
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
-                LimparTerminal.clearScreen();
                 System.out.println("Lembrete Removido!");
-            }else{
-                LimparTerminal.clearScreen();
-                System.out.println("Numero do Lembrete invalido"); 
+            } else {
+                System.out.println("Numero do Lembrete invalido");
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao conectar ao banco de dados");
             e.printStackTrace();
         }
 
     }
+
     public String Login(String nome, String senha) {
-    	Conexao conexao = new Conexao();
+        Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
-        String hashedProvidedPassword="";
-    	
-    	String sql = "SELECT salt, senha FROM trabalho.usuario WHERE nome_usuario = ?";
+        String hashedProvidedPassword = "";
+
+        String sql = "SELECT salt, senha FROM trabalho.usuario WHERE nome_usuario = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        	statement.setString(1, nome);
+            statement.setString(1, nome);
 
-        	try (ResultSet resultSet = statement.executeQuery()) {
-        		if (resultSet.next()) {
-        			String salt = resultSet.getString("salt");
-        			String storedHashedPassword = resultSet.getString("senha");
-        			hashedProvidedPassword = HashPassword.hashPassword(senha, Base64.getDecoder().decode(salt));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String salt = resultSet.getString("salt");
+                    String storedHashedPassword = resultSet.getString("senha");
+                    hashedProvidedPassword = HashPassword.hashPassword(senha, Base64.getDecoder().decode(salt));
 
-        			if (hashedProvidedPassword.equals(storedHashedPassword)) {
-        				System.out.println("Login realizado com sucesso!!!");
-        			} else {
-        				System.out.println("Senha ou nome de usuario incorretos!");
-        				hashedProvidedPassword="";
-        				
-        			}
-        		} else {
-        			System.out.println("Usuário não encontrado!");
-        		}
-        	}
+                    if (hashedProvidedPassword.equals(storedHashedPassword)) {
+                        System.out.println("Login realizado com sucesso!!!");
+                    } else {
+                        System.out.println("Senha ou nome de usuario incorretos!");
+                        hashedProvidedPassword = "";
+
+                    }
+                } else {
+                    System.out.println("Usuário não encontrado!");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return hashedProvidedPassword;
     }
+
     public String getSalt(String nome) {
-    	Conexao conexao = new Conexao();
+        Conexao conexao = new Conexao();
         Connection connection = conexao.getConnection();
-        String salt="";
+        String salt = "";
         String sql = "SELECT salt FROM trabalho.usuario WHERE nome_usuario = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        	statement.setString(1, nome);
+            statement.setString(1, nome);
 
-        	try (ResultSet resultSet = statement.executeQuery()) {
-        		if (resultSet.next()) {
-        			salt = resultSet.getString("salt");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    salt = resultSet.getString("salt");
 
-        		} else {
-        			System.out.println("Salt não encontrado!");
-        		}
-        	}
+                } else {
+                    System.out.println("Salt não encontrado!");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    	
-    	return salt;
+
+        return salt;
     }
 
 }

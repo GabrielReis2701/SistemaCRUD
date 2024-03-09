@@ -31,14 +31,13 @@ public class App {
                     Login();
                     break;
                 case 3:
-                   
+
                     break;
                 default:
-                	System.out.println("Informe uma opção valida");
+                    System.out.println("Informe uma opção valida");
                     break;
             }
         }
-        LimparTerminal.clearScreen();
     }
 
     // função para criar usuario
@@ -47,21 +46,27 @@ public class App {
         String senha = "";
         Scanner scanner = new Scanner(System.in);
 
-        while (senha.equals("") && senha.length() < 4) {
-            System.out.println("Digite seu nome de Usuario");
+        while ((nome.equals("") && nome.length() < 4) && (senha.equals("") && senha.length() < 4)) {
+            System.out.println("Digite seu nome de Usuario (Min 4 caracteres):");
             nome = scanner.nextLine(); // leitura do nome de usuario
 
-            System.out.println("Digite sua senha");
+            System.out.println("Digite sua senha (Min 4 caracteres):");
             senha = scanner.nextLine(); // leitura da senha
             Usuario usuario = new Usuario();
-            usuario.setNome(nome);
-            usuario.setSenha(senha);
-            usuario.setUsuario(usuario); // Cadastra o Usuario dentro do banco de dados
+            if ((!nome.equals("") && nome.length() >= 4) && (!senha.equals("") && senha.length() >= 4)) {
+                usuario.setNome(nome);
+                usuario.setSenha(senha);
+                usuario.setUsuario(usuario); // Cadastra o Usuario dentro do banco de dados
+            } else {
+                System.out.println("Erro ao cadastrar!!! \ninforme um nome e senha com mais de 4 caracteres\n\n");
+            }
+
         }
     }
 
-    //funçao de login
-    public static void Login() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    // funçao de login
+    public static void Login() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+            NoSuchAlgorithmException, NoSuchPaddingException {
         String nome = "";
         String senha = "";
         String id = "";
@@ -78,12 +83,13 @@ public class App {
                                              // relacionado aos lembretes que o proprio criou
 
         } while (id.equals(""));
-        LembretesOpc(id,nome);
+        LembretesOpc(id, nome);
 
     }
 
     // função para criar editar ou remover um lembrete
-    public static void LembretesOpc(String id_usuario, String nome) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public static void LembretesOpc(String id_usuario, String nome) throws InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         Scanner scanner = new Scanner(System.in);
         int esc = 0;
         // menu de Opções
@@ -99,58 +105,58 @@ public class App {
 
             switch (esc) {
                 case 1:
-                    CriarLembrete(id_usuario,nome);
-                    
+                    CriarLembrete(id_usuario, nome);
+
                     break;
                 case 2:
                     Lembretes lembretes = new Lembretes();
                     lembretes.bdscript.ExibirLembretes(id_usuario, nome);
                     break;
                 case 3:
-                    LimparTerminal.clearScreen();
-                    EditarLembrete(id_usuario,nome);
+                    EditarLembrete(id_usuario, nome);
                     break;
                 case 4:
-                	RemoverLembrete(id_usuario,nome);
+                    RemoverLembrete(id_usuario, nome);
                     break;
 
                 default:
-                	System.out.println("Informe uma opção valida");
+                    System.out.println("Informe uma opção valida");
                     break;
             }
         }
-        LimparTerminal.clearScreen();
 
     }
 
-    private static void CriarLembrete(String id_usuario, String nome) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    private static void CriarLembrete(String id_usuario, String nome) throws InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         Scanner scanner = new Scanner(System.in);
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
         String salt = lembretes.bdscript.getSalt(nome);
-        
+
         System.out.print("informe o titulo do Lembrete: ");
         titulo = scanner.nextLine();
         System.out.print("\nDigite a descricao do Lembrete: ");
         descricao = scanner.nextLine();
-        
+
         titulo = CriptografarMensagem.Criptografar(salt, titulo);
         descricao = CriptografarMensagem.Criptografar(salt, descricao);
-        
+
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
-        lembretes.setLembrete(lembretes, id_usuario,nome);
+        lembretes.setLembrete(lembretes, id_usuario, nome);
     }
 
-    private static void EditarLembrete(String id_usuario,String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    private static void EditarLembrete(String id_usuario, String nome) throws InvalidKeyException,
+            NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
         Scanner scanner = new Scanner(System.in);
         int[] lista = new int[10];
         int numero = -1;
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
-        
+
         String salt = lembretes.bdscript.getSalt(nome);
-        lista = lembretes.bdscript.ExibirLembretes(id_usuario,nome);
+        lista = lembretes.bdscript.ExibirLembretes(id_usuario, nome);
         System.out.print("Informe o numero do lembrete que deseja editar: ");
         numero = scanner.nextInt();
         scanner.nextLine();
@@ -162,16 +168,17 @@ public class App {
         descricao = scanner.nextLine();
         titulo = CriptografarMensagem.Criptografar(salt, titulo);
         descricao = CriptografarMensagem.Criptografar(salt, descricao);
-        
+
         lembretes.setTitulo(titulo);
         lembretes.setDescricao(descricao);
         lembretes.bdscript.EditarLembrete(lista[numero], lembretes);
-        
+
     }
 
-    private static void RemoverLembrete(String id_usuario, String nome) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
-    	Scanner scanner = new Scanner(System.in);
-    	int[] lista = new int[10];
+    private static void RemoverLembrete(String id_usuario, String nome) throws InvalidKeyException,
+            NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+        Scanner scanner = new Scanner(System.in);
+        int[] lista = new int[10];
         int numero = -1;
         String titulo = "", descricao = "";
         Lembretes lembretes = new Lembretes();
@@ -180,7 +187,6 @@ public class App {
         numero = scanner.nextInt();
         scanner.nextLine();
         lembretes.bdscript.RemoverLembrete(lista[numero]);
-        
-        
+
     }
 }

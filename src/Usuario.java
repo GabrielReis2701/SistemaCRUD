@@ -1,3 +1,4 @@
+
 /**
  * Usuario
  */
@@ -5,9 +6,9 @@ import java.security.SecureRandom;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 public class Usuario {
     Script bdscript = new Script();
-    LimparTerminal limparTerminal;
     HashPassword hashPassword;
 
     private String nome;
@@ -30,15 +31,15 @@ public class Usuario {
     }
 
     public void setUsuario(Usuario usuario) {
-    	byte[] salt = HashPassword.generateSalt();
-    	String hashedPassword = HashPassword.hashPassword(usuario.senha, salt);
-    	
-        bdscript.InserirUsuario(usuario.nome,hashedPassword,salt);
+        byte[] salt = HashPassword.generateSalt();
+        String hashedPassword = HashPassword.hashPassword(usuario.senha, salt);
+
+        bdscript.InserirUsuario(usuario.nome, hashedPassword, salt);
     }
-    
-    public String Login(String nome, String senha){
-       String salt = bdscript.Login(nome, senha);
-       return salt;
+
+    public String Login(String nome, String senha) {
+        String salt = bdscript.Login(nome, senha);
+        return salt;
 
     }
 
